@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="AlgorithmCategory" stdset="0">
+   <string>DFMod</string>
+  </property>
+  <property name="AlgorithmDescription" stdset="0">
+   <string>signed_distances</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Choose Rock Type Property</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="PropertySelectorNoRegion" name="propertyselectornoregion"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Anisotropic search</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="EllipsoidInput" name="ellipsoidinput"/>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PropertySelectorNoRegion</class>
+   <extends>QWidget</extends>
+   <header>qtplugins/selectors.h</header>
+  </customwidget>
+  <customwidget>
+   <class>EllipsoidInput</class>
+   <extends>QWidget</extends>
+   <header>qtplugins/ellipsoid_input.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

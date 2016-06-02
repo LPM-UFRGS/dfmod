@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>568</width>
+    <height>528</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="AlgorithmCategory" stdset="0">
+   <string>DFMod</string>
+  </property>
+  <property name="AlgorithmDescription" stdset="0">
+   <string>interpolator</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab_1">
+      <attribute name="title">
+       <string>General</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Choose the grid to interpolate</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="GridSelectorBasic" name="gridselectorbasic_2"/>
+       </item>
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Choose signed distances properties</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="GridSelectorBasic" name="gridselectorbasic"/>
+       </item>
+       <item>
+        <widget class="OrderedPropertySelector" name="orderedpropertyselector"/>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Conditioning data</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Min</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinBox_2"/>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Max</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinBox"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="EllipsoidInput" name="ellipsoidinput"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>Variogram</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="1" column="0">
+        <widget class="Indicator_regionalization_input" name="indicator_regionalization_input"/>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Enter signed distances variograms</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_3">
+      <attribute name="title">
+       <string>Options</string>
+      </attribute>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GridSelectorBasic</class>
+   <extends>QComboBox</extends>
+   <header>qtplugins/selectors.h</header>
+  </customwidget>
+  <customwidget>
+   <class>OrderedPropertySelector</class>
+   <extends>GsTLGroupBox</extends>
+   <header>qtplugins/selectors.h</header>
+  </customwidget>
+  <customwidget>
+   <class>GsTLGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qtplugins/selectors.h</header>
+  </customwidget>
+  <customwidget>
+   <class>EllipsoidInput</class>
+   <extends>QWidget</extends>
+   <header>qtplugins/ellipsoid_input.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Indicator_regionalization_input</class>
+   <extends>QWidget</extends>
+   <header>qtplugins/two_point_indicator_statistics_input.h</header>
+   <slots>
+    <slot>set_thresholds(QStringList)</slot>
+    <slot>set_indicator_names(QString)</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>gridselectorbasic</sender>
+   <signal>activated(QString)</signal>
+   <receiver>orderedpropertyselector</receiver>
+   <slot>show_properties(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>228</x>
+     <y>88</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>225</x>
+     <y>155</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
