@@ -105,10 +105,14 @@ class interpolator:
             sgems.execute('RunGeostatAlgorithm  kriging::/GeostatParamUtils/XML::<parameters>  <algorithm name="kriging" />     <Variogram  structures_count="{}" >    {}  </Variogram>    <ouput_kriging_variance  value="0"  />     <output_n_samples_  value="0"  />     <output_average_distance  value="0"  />     <output_sum_weights  value="0"  />     <output_sum_positive_weights  value="0"  />     <output_lagrangian  value="0"  />     <Nb_processors  value="-2"  />    <Grid_Name value="{}" region=""  />     <Property_Name  value="{}" />     <Hard_Data  grid="{}"   property="{}"   region=""  />     <Kriging_Type  type="Ordinary Kriging (OK)" >    <parameters />  </Kriging_Type>    <do_block_kriging  value="1"  />     <npoints_x  value="5" />     <npoints_y  value="5" />     <npoints_z  value="5" />     <Min_Conditioning_Data  value="{}" />     <Max_Conditioning_Data  value="{}" />     <Search_Ellipsoid  value="{}" />    <AdvancedSearch  use_advanced_search="0"></AdvancedSearch>  </parameters>'.format(n_struct, var_str, grid_krig, prop_name, grid_var, prop_HD, min_cond, max_cond, elipsoide))
 
             SG_OK_list.append(sgems.get_property(grid_krig, prop_name))
-        print SG_OK_list
-        print SG_OK_list[0]
+
+
+
+
 
         RT = (self.params['orderedpropertyselector']['value']).split(';')
+
+
 
         GeoModel = []
 
@@ -121,6 +125,22 @@ class interpolator:
             GeoModel.append(int(RT[k][-1]))
 
         sgems.set_property(grid_krig, 'Geologic_Model', GeoModel)
+
+        #Reading Gamma
+        if self.params['softmax_check']['value']=='1':
+            gamma =float( self.params['Gamma']['value'])
+
+        Prob_list = SG_OK_list[:]
+        if self.params['softmax_check']['value']=='1':
+            for i in range(len(SG_OK_list[0])):
+                soma = 0
+                for j in range(len(SG_OK_list)):
+                    soma = soma + math.exp(-SG_OK_list[j][i]/gamma)
+                for j in range(len(SG_OK_list)):
+                    Prob_list[j][i] =math.exp(-SG_OK_list[j][i]/gamma)/soma
+
+        for i in range(len(Prob_list)):
+            sgems.set_property(grid_krig,'Probability_RT'+str(RT[i][-1]),Prob_list[i])
 
         return True
 
