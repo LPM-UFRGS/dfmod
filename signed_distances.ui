@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>439</width>
+    <height>536</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,24 +26,41 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Choose Rock Type Property</string>
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="title">
+        <string>Choose rock property</string>
        </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="PropertySelectorNoRegion" name="propertyselectornoregion"/>
+        </item>
+       </layout>
       </widget>
      </item>
      <item>
-      <widget class="PropertySelectorNoRegion" name="propertyselectornoregion"/>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
         <string>Anisotropic search</string>
        </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="EllipsoidInput" name="ellipsoidinput"/>
+        </item>
+       </layout>
       </widget>
      </item>
      <item>
-      <widget class="EllipsoidInput" name="ellipsoidinput"/>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>

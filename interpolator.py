@@ -28,7 +28,6 @@ class interpolator:
         print self.params
 
         # Getting properties
-
         grid_krig = self.params['gridselectorbasic_2']['value']
         grid_var = self.params['gridselectorbasic']['value']
         props = (self.params['orderedpropertyselector']['value']).split(';')
@@ -75,44 +74,27 @@ class interpolator:
                 # Getting variogram parameters
                 Structure = "Structure_" + str(j + 1)
 
-                range1 = self.params['indicator_regionalization_input'][indicator_group]['Covariance_input'][Structure][
-                    'Two_point_model']['ranges']['range1']
-                range2 = self.params['indicator_regionalization_input'][indicator_group]['Covariance_input'][Structure][
-                    'Two_point_model']['ranges']['range2']
-                range3 = self.params['indicator_regionalization_input'][indicator_group]['Covariance_input'][Structure][
-                    'Two_point_model']['ranges']['range3']
+                range1 = self.params['indicator_regionalization_input'][indicator_group]['Covariance_input'][Structure]['Two_point_model']['ranges']['range1']
+                range2 = self.params['indicator_regionalization_input'][indicator_group]['Covariance_input'][Structure]['Two_point_model']['ranges']['range2']
+                range3 = self.params['indicator_regionalization_input'][indicator_group]['Covariance_input'][Structure]['Two_point_model']['ranges']['range3']
 
-                cont = self.params['indicator_regionalization_input'][indicator_group]['Covariance_input'][Structure][
-                    'Two_point_model']['contribution']
+                cont = self.params['indicator_regionalization_input'][indicator_group]['Covariance_input'][Structure]['Two_point_model']['contribution']
 
-                cov_type = \
-                    self.params['indicator_regionalization_input'][indicator_group]['Covariance_input'][Structure][
-                        'Two_point_model']['type']
+                cov_type = self.params['indicator_regionalization_input'][indicator_group]['Covariance_input'][Structure]['Two_point_model']['type']
 
-                rake = self.params['indicator_regionalization_input'][indicator_group]['Covariance_input'][Structure][
-                    'Two_point_model']['angles']['rake']
-                dip = self.params['indicator_regionalization_input'][indicator_group]['Covariance_input'][Structure][
-                    'Two_point_model']['angles']['dip']
-                azimuth = \
-                    self.params['indicator_regionalization_input'][indicator_group]['Covariance_input'][Structure][
-                        'Two_point_model']['angles']['azimuth']
+                rake = self.params['indicator_regionalization_input'][indicator_group]['Covariance_input'][Structure]['Two_point_model']['angles']['rake']
+                dip = self.params['indicator_regionalization_input'][indicator_group]['Covariance_input'][Structure]['Two_point_model']['angles']['dip']
+                azimuth = self.params['indicator_regionalization_input'][indicator_group]['Covariance_input'][Structure]['Two_point_model']['angles']['azimuth']
 
                 # Writing variogram parameters on a variable
-                var_str = var_str + '<{} type="{}">  <Two_point_model  contribution="{}"  type="{}"   >      <ranges range1="{}"  range2="{}"  range3="{}"   />      <angles azimuth="{}"  dip="{}"  rake="{}"   />    </Two_point_model>    </{}> '.format(
-                    Structure, 'Covariance', cont, cov_type, range1, range2, range3, azimuth, dip, rake, Structure)
+                var_str = var_str + '<{} type="{}">  <Two_point_model  contribution="{}"  type="{}"   >      <ranges range1="{}"  range2="{}"  range3="{}"   />      <angles azimuth="{}"  dip="{}"  rake="{}"   />    </Two_point_model>    </{}> '.format(Structure, 'Covariance', cont, cov_type, range1, range2, range3, azimuth, dip, rake, Structure)
 
             # Calling ordinary kriging for each variable, using the variograms parameters above
             sgems.execute('RunGeostatAlgorithm  kriging::/GeostatParamUtils/XML::<parameters>  <algorithm name="kriging" />     <Variogram  structures_count="{}" >    {}  </Variogram>    <ouput_kriging_variance  value="0"  />     <output_n_samples_  value="0"  />     <output_average_distance  value="0"  />     <output_sum_weights  value="0"  />     <output_sum_positive_weights  value="0"  />     <output_lagrangian  value="0"  />     <Nb_processors  value="-2"  />    <Grid_Name value="{}" region=""  />     <Property_Name  value="{}" />     <Hard_Data  grid="{}"   property="{}"   region=""  />     <Kriging_Type  type="Ordinary Kriging (OK)" >    <parameters />  </Kriging_Type>    <do_block_kriging  value="1"  />     <npoints_x  value="5" />     <npoints_y  value="5" />     <npoints_z  value="5" />     <Min_Conditioning_Data  value="{}" />     <Max_Conditioning_Data  value="{}" />     <Search_Ellipsoid  value="{}" />    <AdvancedSearch  use_advanced_search="0"></AdvancedSearch>  </parameters>'.format(n_struct, var_str, grid_krig, prop_name, grid_var, prop_HD, min_cond, max_cond, elipsoide))
 
             SG_OK_list.append(sgems.get_property(grid_krig, prop_name))
 
-
-
-
-
         RT = (self.params['orderedpropertyselector']['value']).split(';')
-
-
 
         GeoModel = []
 
@@ -151,7 +133,6 @@ class interpolator:
     def name(self):
 
         return "interpolator"
-
 
 ###############################################################
 def get_plugins():

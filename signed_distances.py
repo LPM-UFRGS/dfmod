@@ -5,34 +5,18 @@ import numpy as np
 
 #Function to calculate the distances
 def dist(x1, y1, z1, x2, y2, z2):
-    return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2)	
+    return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2)
 
 def rot(range1, range2, range3, azimuth, dip, rake, vetor):
 
-    if azimuth >= 0 and azimuth <=270:	
+    if azimuth >= 0 and azimuth <=270:
 	alpha = math.radians(90-azimuth)
     else:
 	alpha = math.radians(450-azimuth)
     beta = -math.radians(dip)
-    phi = math.radians(rake)   
-
-    dilat_matrix = np.zeros((3,3))
+    phi = math.radians(rake)
 
     rot_matrix = np.zeros((3,3))
-
-    '''dilat_matrix[0,0] = range1/range2
-    dilat_matrix[1,1] = 1.00
-    dilat_matrix[2,2] = range1/range3'''
-
-    '''rot_matrix[0,0] = math.cos(alpha)*math.cos(beta)-math.sin(alpha)*math.sin(beta)*math.sin(phi)
-    rot_matrix[0,1] = -math.sin(alpha)*math.cos(beta)-math.cos(alpha)*math.sin(beta)*math.sin(phi)
-    rot_matrix[0,2] = math.cos(beta)*math.sin(phi)
-    rot_matrix[1,0] = math.sin(alpha)*math.cos(beta)
-    rot_matrix[1,1] = math.cos(alpha)*math.cos(beta)
-    rot_matrix[1,2] = math.sin(beta)
-    rot_matrix[2,0] = -math.cos(alpha)*math.sin(phi)-math.sin(alpha)*math.sin(beta)*math.cos(phi)
-    rot_matrix[2,1] = math.sin(alpha)*math.sin(phi)-math.cos(alpha)*math.sin(beta)*math.sin(phi)
-    rot_matrix[2,2] = math.cos(beta)*math.cos(phi)'''
 
     rot_matrix[0,0] = math.cos(beta)*math.cos(alpha)
     rot_matrix[0,1] = math.cos(beta)*math.sin(alpha)
@@ -83,52 +67,52 @@ class signed_distances:
 
     def execute(self):
 
-	#Execute the funtion read_params
-	read_params(self.params)
-	print self.params
+        #Execute the funtion read_params
+        read_params(self.params)
+        print self.params
 
         #Get the grid and rock type propery
-	grid = self.params['propertyselectornoregion']['grid']
+        grid = self.params['propertyselectornoregion']['grid']
         prop = self.params['propertyselectornoregion']['property']
 
-	#Error message
+        #Error message
         if len(grid) == 0 or len(prop) == 0:
             print 'Select the rocktype property'
-            return False	
+            return False
 
-	#Get the X, Y and Z coordinates
+        #Get the X, Y and Z coordinates
         X = sgems.get_property(grid, '_X_')
         Y = sgems.get_property(grid, '_Y_')
         Z = sgems.get_property(grid, '_Z_')
         RT = sgems.get_property(grid, prop)
 
-	elipsoide = self.params['ellipsoidinput']['value']
-	elipsoide_split = elipsoide.split()
-	
-	range1 = float(elipsoide_split[0])
-	range2 = float(elipsoide_split[1])
-	range3 = float(elipsoide_split[2])
-	
-	azimuth = float(elipsoide_split[3])
-	dip = float(elipsoide_split[4])
-	rake = float(elipsoide_split[5])
+        elipsoide = self.params['ellipsoidinput']['value']
+        elipsoide_split = elipsoide.split()
 
-	X, Y, Z = anis_search(X, Y, Z, range1, range2, range3, azimuth, dip, rake)
+        range1 = float(elipsoide_split[0])
+        range2 = float(elipsoide_split[1])
+        range3 = float(elipsoide_split[2])
 
-	#Creates a list of all rock types
+        azimuth = float(elipsoide_split[3])
+        dip = float(elipsoide_split[4])
+        rake = float(elipsoide_split[5])
+
+        X, Y, Z = anis_search(X, Y, Z, range1, range2, range3, azimuth, dip, rake)
+
+        #Creates a list of all rock types
         rt_list = []
         for i in RT:
             if i not in rt_list:
                 rt_list.append(i)
 
-	#Sort the rock type list in crescent order
+        #Sort the rock type list in crescent order
         rt_list = [int(x) for x in rt_list]
         rt_list.sort()
 
-	#Create a empty distance matrix
+        #Create a empty distance matrix
         dist_matrix = np.zeros(shape = ((len(rt_list)), (len(RT))))
 
-	#Calculates the signed distances, and append it in the distance matrix
+        #Calculates the signed distances, and append it in the distance matrix
         for i in range(len(rt_list)):
             rock = rt_list[i]
 
@@ -156,7 +140,7 @@ class signed_distances:
 
                         dist_matrix[i][j] = dsmin
 
-	#Creates the signed distances properties
+        #Creates the signed distances properties
         for i in range(len(dist_matrix)):
             list = dist_matrix[i].tolist()
             sgems.set_property(grid, 'Signed_Distances_RT_' + str(rt_list[i]), list)
