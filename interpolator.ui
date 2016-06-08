@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>Form</class>
  <widget class="QWidget" name="Form">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -130,53 +133,15 @@
       <attribute name="title">
        <string>Options</string>
       </attribute>
-      <layout class="QFormLayout" name="formLayout">
-       <item row="5" column="0">
-        <widget class="QCheckBox" name="softmax_check">
-         <property name="text">
-          <string>Softmax transformation</string>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="0">
-        <widget class="QCheckBox" name="servo_check">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>Servo system</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>Gamma</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="1">
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="1" column="1">
         <widget class="QDoubleSpinBox" name="Gamma">
          <property name="enabled">
           <bool>false</bool>
          </property>
         </widget>
        </item>
-       <item row="13" column="0">
-        <widget class="QLabel" name="label_7">
-         <property name="text">
-          <string>Lambda</string>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="1">
-        <widget class="QDoubleSpinBox" name="Lambda">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="14" column="0" colspan="2">
+       <item row="6" column="0">
         <spacer name="verticalSpacer_3">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -188,6 +153,61 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>Lambda</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QCheckBox" name="servo_check">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Servo system</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QDoubleSpinBox" name="Lambda">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0" colspan="2">
+        <widget class="PropertySelectorNoRegion" name="targe_prop">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="softmax_check">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>Softmax transformation</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Gamma</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>Select target proportion</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -212,6 +232,11 @@
   <customwidget>
    <class>GridSelectorBasic</class>
    <extends>QComboBox</extends>
+   <header>qtplugins/selectors.h</header>
+  </customwidget>
+  <customwidget>
+   <class>PropertySelectorNoRegion</class>
+   <extends>QWidget</extends>
    <header>qtplugins/selectors.h</header>
   </customwidget>
   <customwidget>
@@ -242,18 +267,18 @@
  <resources/>
  <connections>
   <connection>
-   <sender>gridselectorbasic</sender>
-   <signal>activated(QString)</signal>
-   <receiver>orderedpropertyselector</receiver>
-   <slot>show_properties(QString)</slot>
+   <sender>softmax_check</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Gamma</receiver>
+   <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>239</x>
-     <y>140</y>
+     <x>178</x>
+     <y>60</y>
     </hint>
     <hint type="destinationlabel">
-     <x>225</x>
-     <y>155</y>
+     <x>313</x>
+     <y>87</y>
     </hint>
    </hints>
   </connection>
@@ -264,28 +289,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>107</x>
-     <y>72</y>
+     <x>97</x>
+     <y>58</y>
     </hint>
     <hint type="destinationlabel">
-     <x>90</x>
-     <y>125</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>softmax_check</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>Gamma</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>177</x>
-     <y>75</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>241</x>
-     <y>73</y>
+     <x>113</x>
+     <y>121</y>
     </hint>
    </hints>
   </connection>
@@ -296,12 +305,44 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>120</x>
-     <y>126</y>
+     <x>227</x>
+     <y>117</y>
     </hint>
     <hint type="destinationlabel">
-     <x>235</x>
-     <y>119</y>
+     <x>319</x>
+     <y>147</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>servo_check</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>targe_prop</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>198</x>
+     <y>118</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>209</x>
+     <y>198</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gridselectorbasic</sender>
+   <signal>activated(QString)</signal>
+   <receiver>orderedpropertyselector</receiver>
+   <slot>show_properties(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>278</x>
+     <y>134</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>269</x>
+     <y>196</y>
     </hint>
    </hints>
   </connection>

@@ -2,7 +2,23 @@
 import sgems
 import math
 import numpy as np
+import random
 
+def random_path(n):
+    path = range(n)
+    random.shuffle(path)
+    return path
+
+def proportion(var):
+    items = []
+    for i in var:
+        if i not in items:
+            items.append(i)
+    items.sort()
+    target_prop = []
+    for i in items:
+        target_prop.append(float(var.count(i))/len(var))
+    return target_prop
 
 # Shows every parameter of the plugin in the command pannel
 def read_params(a, j=''):
@@ -11,7 +27,6 @@ def read_params(a, j=''):
             print j + "['" + str(i) + "']=" + str(a[i])
         else:
             read_params(a[i], j + "['" + str(i) + "']")
-
 
 class interpolator:
     def __init__(self):
@@ -96,6 +111,7 @@ class interpolator:
 
         RT = (self.params['orderedpropertyselector']['value']).split(';')
 
+        #Determinig geomodel
         GeoModel = []
 
         for i in range(len(SG_OK_list[0])):
@@ -108,7 +124,7 @@ class interpolator:
 
         sgems.set_property(grid_krig, 'Geologic_Model', GeoModel)
 
-        #Reading Gamma
+        #Operating softmax transformation
         if self.params['softmax_check']['value']=='1':
             gamma =float( self.params['Gamma']['value'])
 
@@ -121,8 +137,43 @@ class interpolator:
                 for j in range(len(SG_OK_list)):
                     Prob_list[j][i] =math.exp(-SG_OK_list[j][i]/gamma)/soma
 
-        for i in range(len(Prob_list)):
-            sgems.set_property(grid_krig,'Probability_RT'+str(RT[i][-1]),Prob_list[i])
+            for i in range(len(Prob_list)):
+                sgems.set_property(grid_krig,'Probability_RT'+str(RT[i][-1]),Prob_list[i])
+
+        '''#Operating servo-system
+        if self.params['servo_check']['value'] == '1':
+            var_rt = sgems.get_property(self.params['targe_prop']['grid'],self.params['targe_prop']['property'])
+            RT_prop = proportion(var_rt)
+
+            ran_path = random_path(len(Prob_list[0][0]))
+
+            #Reading lambda1
+            lambda1 = float(self.params['Lambda']['value'])
+
+            # Determine proportions in geomodel
+            proportions_geomodel = []
+            for i in range(len(Prob_list)):
+                soma = 0
+                for j in ran_path:
+                    if GeoModel[j] == RT[i]:
+                        soma = soma + 1
+                proportion_v = 0
+                proportion_vector =[]
+                for j in ran_path:
+                    if GeoModel[j] == RT[i]:
+                        proportion_v = (proportion_v + 1)/soma
+                        proportions_vector.append(proportion_v)
+                proportions_geomodel.append(proportions_vector)
+
+            for i in range(len(Prob_list)):
+                for j in ran_path:
+                    Prob_list[i][j] = Prob_list[i][j] + lambda1*(RT_prop[i]-proprotions_geomodel[i][j])
+
+            print Prob_list'''
+
+
+
+
 
         return True
 
