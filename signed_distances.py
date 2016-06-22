@@ -67,9 +67,9 @@ class signed_distances:
 
     def execute(self):
 
-        #Execute the funtion read_params
+        '''#Execute the funtion read_params
         read_params(self.params)
-        print self.params
+        print self.params'''
 
         #Get the grid and rock type propery
         grid = self.params['propertyselectornoregion']['grid']
