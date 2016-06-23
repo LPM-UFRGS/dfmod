@@ -50,6 +50,8 @@ class interpolator:
         n_prop = int(self.params['orderedpropertyselector']['count'])
         min_cond = self.params['spinBox_2']['value']
         max_cond = self.params['spinBox']['value']
+        var_rt_grid = self.params['targe_prop']['grid']
+        var_rt_st = self.params['targe_prop']['property']
 
         # Error messages
         if n_var != n_prop:
@@ -58,6 +60,10 @@ class interpolator:
 
         if len(grid_var) == 0 or len(grid_krig) == 0:
             print 'Select the variables'
+            return False
+
+        if len(var_rt_grid) == 0 or len(var_rt_st) == 0:
+            print 'Select the target proportion property'
             return False
 
         SG_OK_list = []
@@ -129,11 +135,6 @@ class interpolator:
         if self.params['softmax_check']['value']=='1':
             gamma =float( self.params['Gamma']['value'])
 
-        '''print SG_OK_list
-        for i in range(len(SG_OK_list)):
-            SG_OK_list[i] = [k/500 for k in SG_OK_list[i]]
-        print SG_OK_list'''
-
         Prob_list = SG_OK_list[:]
         if self.params['softmax_check']['value']=='1':
             for i in range(len(SG_OK_list[0])):
@@ -152,11 +153,6 @@ class interpolator:
             var_rt = sgems.get_property(self.params['targe_prop']['grid'],self.params['targe_prop']['property'])
             lambda1 = float(self.params['Lambda']['value'])
             target_prop = proportion(var_rt,RT)
-
-            #Error message
-            if len(var_rt) == 0:
-                print 'Select the target proportion property'
-                return False
 
             ran_path = random_path(len(Prob_list[0]))
 

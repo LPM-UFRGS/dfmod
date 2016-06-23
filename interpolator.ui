@@ -26,7 +26,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_1">
       <attribute name="title">
@@ -139,6 +139,9 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="maximum">
+          <double>999999.000000000000000</double>
+         </property>
         </widget>
        </item>
        <item row="6" column="0">
@@ -175,6 +178,9 @@
         <widget class="QDoubleSpinBox" name="Lambda">
          <property name="enabled">
           <bool>false</bool>
+         </property>
+         <property name="maximum">
+          <double>0.990000000000000</double>
          </property>
         </widget>
        </item>
