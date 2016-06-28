@@ -156,14 +156,25 @@ class interpolator:
 
             ran_path = random_path(len(Prob_list[0]))
 
+            p = 0
+            GeoModel_corrected = GeoModel[:]
+
             visited_rts = []
             for j in ran_path:
                 visited_rts.append(GeoModel[j])
                 instant_proportions = proportion(visited_rts,RT)
                 for i in range(len(Prob_list)):
                     Prob_list[i][j] = Prob_list[i][j] + lambda1 * (target_prop[i] - instant_proportions[i])
+                    sgmax = 10e-21
+                    if Prob_list[i][j] > sgmax:
+                        sgmax = Prob_list[i][j]
+                        p = i
+                GeoModel_corrected[j] = (int[RT][p][-1])
+                visited_rts[-1] = (int[RT][p][-1])
 
-            for i in range(len(Prob_list)):
+            sgems.set_property(grid_krig, 'Geologic_Model_Corrected', GeoModel_corrected)
+
+            '''for i in range(len(Prob_list)):
                 for j in range(len(Prob_list[0])):
                     print type(Prob_list), type(Prob_list[i][j]), len(Prob_list), len(Prob_list[i])
                     if Prob_list[i][j] > 1.0:
@@ -181,7 +192,7 @@ class interpolator:
                         p = j
                 GeoModel_corrected.append(int(RT[p][-1]))
 
-            sgems.set_property(grid_krig, 'Geologic_Model_Corrected', GeoModel_corrected)
+            sgems.set_property(grid_krig, 'Geologic_Model_Corrected', GeoModel_corrected)'''
 
         return True
 
