@@ -170,8 +170,8 @@ class interpolator:
                     if Prob_list[i][j] > sgmax:
                         sgmax = Prob_list[i][j]
                         p = i
-                GeoModel_corrected[j] = int([RT][p][-1])
-                visited_rts[-1] = int([RT][p][-1])
+                GeoModel_corrected[j] = int(RT[p][-1])
+                visited_rts[-1] = int(RT[p][-1])
 
             sgems.set_property(grid_krig, 'Geologic_Model_Corrected', GeoModel_corrected)
 
