@@ -26,7 +26,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_1">
       <attribute name="title">
@@ -93,7 +93,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QSpinBox" name="spinBox"/>
+           <widget class="QSpinBox" name="spinBox">
+            <property name="maximum">
+             <number>99999999</number>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -139,8 +143,14 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="minimum">
+          <double>0.010000000000000</double>
+         </property>
          <property name="maximum">
           <double>999999.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>175.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -181,6 +191,9 @@
          </property>
          <property name="maximum">
           <double>0.990000000000000</double>
+         </property>
+         <property name="value">
+          <double>0.500000000000000</double>
          </property>
         </widget>
        </item>
@@ -251,16 +264,6 @@
    <header>qtplugins/selectors.h</header>
   </customwidget>
   <customwidget>
-   <class>GsTLGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qtplugins/selectors.h</header>
-  </customwidget>
-  <customwidget>
-   <class>EllipsoidInput</class>
-   <extends>QWidget</extends>
-   <header>qtplugins/ellipsoid_input.h</header>
-  </customwidget>
-  <customwidget>
    <class>Indicator_regionalization_input</class>
    <extends>QWidget</extends>
    <header>qtplugins/two_point_indicator_statistics_input.h</header>
@@ -268,6 +271,16 @@
     <slot>set_thresholds(QStringList)</slot>
     <slot>set_indicator_names(QString)</slot>
    </slots>
+  </customwidget>
+  <customwidget>
+   <class>EllipsoidInput</class>
+   <extends>QWidget</extends>
+   <header>qtplugins/ellipsoid_input.h</header>
+  </customwidget>
+  <customwidget>
+   <class>GsTLGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qtplugins/selectors.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

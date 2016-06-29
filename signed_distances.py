@@ -1,12 +1,25 @@
+#-------------------------------------------------------------------------------
+#
+# Signed Distance Function Calculator
+# ***********************************
+#
+# This SGeMS plugin calculates the anisotropic signed distances for each data
+# point and each rock type
+#
+# AUTHOR: Roberto Mentzingen Rolo
+#
+#-------------------------------------------------------------------------------
+
 #!/bin/python
 import sgems
 import math
 import numpy as np
 
-#Function to calculate the distances
+#Calculates the distances
 def dist(x1, y1, z1, x2, y2, z2):
     return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2)
 
+#Defines the rotation and dilatation matrices
 def rot(range1, range2, range3, azimuth, dip, rake, vetor):
 
     if azimuth >= 0 and azimuth <=270:
@@ -32,6 +45,7 @@ def rot(range1, range2, range3, azimuth, dip, rake, vetor):
 
     return np.dot(rot_matrix, vetor)
 
+#Transform the data with the ratation/dilatation matrices
 def anis_search(X, Y, Z, range1, range2, range3, azimuth, dip, rake):
 
     X_linha = []

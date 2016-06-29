@@ -1,14 +1,29 @@
+#-------------------------------------------------------------------------------
+#
+# Signed Distances Function Interpolator
+# **************************************
+#
+# This SGeMS plugin interpolates (OK) the signed distance function calculated
+# for each data and rock type, and creates a geologic model based on the minimum
+# estimated distance.
+#
+# AUTHOR: Roberto Mentzingen Rolo
+#
+#-------------------------------------------------------------------------------
+
 #!/bin/python
 import sgems
 import math
 import numpy as np
 import random
 
+#Creates a randon path given the size of the grid
 def random_path(n):
     path = range(n)
     random.shuffle(path)
     return path
 
+#Calculates the proportions of variables on a list
 def proportion(var, RT):
     rock_types =[]
     target_prop = []
@@ -50,22 +65,17 @@ class interpolator:
         n_prop = int(self.params['orderedpropertyselector']['count'])
         min_cond = self.params['spinBox_2']['value']
         max_cond = self.params['spinBox']['value']
-        var_rt_grid = self.params['targe_prop']['grid']
-        var_rt_st = self.params['targe_prop']['property']
 
         # Error messages
-        if n_var != n_prop:
-            print 'Number of variables and number of variograms models are diferent.'
-            return False
-
         if len(grid_var) == 0 or len(grid_krig) == 0:
             print 'Select the variables'
             return False
 
-        if len(var_rt_grid) == 0 or len(var_rt_st) == 0:
-            print 'Select the target proportion property'
+        if n_var != n_prop:
+            print 'Number of variables and number of variograms models are diferent.'
             return False
 
+        #Creating an empty list to store the interpolated distances
         SG_OK_list = []
 
         # Loop in every variable
@@ -82,8 +92,7 @@ class interpolator:
 
             elipsoide = self.params['ellipsoidinput']['value']
 
-            n_struct = int(
-                self.params['indicator_regionalization_input'][indicator_group]['Covariance_input']['structures_count'])
+            n_struct = int(self.params['indicator_regionalization_input'][indicator_group]['Covariance_input']['structures_count'])
 
             # Error message
             if n_struct == 0:
@@ -117,7 +126,7 @@ class interpolator:
 
         RT = (self.params['orderedpropertyselector']['value']).split(';')
 
-        #Determinig geomodel
+        #Determinig geomodel based on minimum estimed signed distance function
         GeoModel = []
 
         t = 0
@@ -133,10 +142,10 @@ class interpolator:
 
         #Operating softmax transformation
         if self.params['softmax_check']['value']=='1':
-            gamma =float( self.params['Gamma']['value'])
 
-        Prob_list = SG_OK_list[:]
-        if self.params['softmax_check']['value']=='1':
+            gamma =float( self.params['Gamma']['value'])
+            Prob_list = SG_OK_list[:]
+
             for i in range(len(SG_OK_list[0])):
                 soma = 0
                 for j in range(len(SG_OK_list)):
@@ -147,53 +156,38 @@ class interpolator:
             for i in range(len(Prob_list)):
                 sgems.set_property(grid_krig,'Probability_RT'+str(RT[i][-1]),Prob_list[i])
 
-        #Operating servo-system
-        if self.params['servo_check']['value'] == '1':
+            #Operating servo-system
+            if self.params['servo_check']['value'] == '1':
+                var_rt_grid = self.params['targe_prop']['grid']
+                var_rt_st = self.params['targe_prop']['property']
+                if len(var_rt_grid) == 0 or len(var_rt_st) == 0:
+                    print 'Select the target proportion property'
+                    return False
 
-            var_rt = sgems.get_property(self.params['targe_prop']['grid'],self.params['targe_prop']['property'])
-            lambda1 = float(self.params['Lambda']['value'])
-            target_prop = proportion(var_rt,RT)
-            mi = lambda1/(1-lambda1)
+                var_rt = sgems.get_property(self.params['targe_prop']['grid'],self.params['targe_prop']['property'])
+                lambda1 = float(self.params['Lambda']['value'])
+                target_prop = proportion(var_rt,RT)
+                mi = lambda1/(1-lambda1)
 
-            ran_path = random_path(len(Prob_list[0]))
+                ran_path = random_path(len(Prob_list[0]))
 
-            p = 0
-            GeoModel_corrected = GeoModel[:]
+                p = 0
+                GeoModel_corrected = GeoModel[:]
 
-            visited_rts = []
-            for j in ran_path:
-                visited_rts.append(GeoModel[j])
-                instant_proportions = proportion(visited_rts,RT)
-                for i in range(len(Prob_list)):
-                    Prob_list[i][j] = Prob_list[i][j] + mi * (target_prop[i] - instant_proportions[i])
-                    sgmax = 10e-21
-                    if Prob_list[i][j] > sgmax:
-                        sgmax = Prob_list[i][j]
-                        p = i
-                GeoModel_corrected[j] = int(RT[p][-1])
-                visited_rts[-1] = int(RT[p][-1])
+                visited_rts = []
+                for j in ran_path:
+                    visited_rts.append(GeoModel[j])
+                    instant_proportions = proportion(visited_rts,RT)
+                    for i in range(len(Prob_list)):
+                        Prob_list[i][j] = Prob_list[i][j] + mi * (target_prop[i] - instant_proportions[i])
+                        sgmax = 10e-21
+                        if Prob_list[i][j] > sgmax:
+                            sgmax = Prob_list[i][j]
+                            p = i
+                    GeoModel_corrected[j] = int(RT[p][-1])
+                    visited_rts[-1] = int(RT[p][-1])
 
-            sgems.set_property(grid_krig, 'Geologic_Model_Corrected', GeoModel_corrected)
-
-            '''for i in range(len(Prob_list)):
-                for j in range(len(Prob_list[0])):
-                    print type(Prob_list), type(Prob_list[i][j]), len(Prob_list), len(Prob_list[i])
-                    if Prob_list[i][j] > 1.0:
-                        Prob_list[i][j] = 1.0
-                    if Prob_list[i][j] < 0.0:
-                        Prob_list[i][j] = 0.0
-
-            GeoModel_corrected = []
-            p = 0
-            for i in range(len(Prob_list[0])):
-                sgmax = 10e-21
-                for j in range(len(Prob_list)):
-                    if Prob_list[j][i] > sgmax:
-                        sgmax = Prob_list[j][i]
-                        p = j
-                GeoModel_corrected.append(int(RT[p][-1]))
-
-            sgems.set_property(grid_krig, 'Geologic_Model_Corrected', GeoModel_corrected)'''
+                sgems.set_property(grid_krig, 'Geologic_Model_Corrected', GeoModel_corrected)
 
         return True
 
