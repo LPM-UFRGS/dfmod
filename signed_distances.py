@@ -132,12 +132,15 @@ class signed_distances:
 
             for j in range(len(RT)):
 
-                if RT[j] == rock:
+                if math.isnan(RT[j]):
+                    dist_matrix[i][j] = float('nan')
+
+                elif RT[j] == rock:
                     dsmin = 1.0e21
 
                     for k in range(len(RT)):
 
-                        if RT[j] != RT[k]:
+                        if RT[j] != RT[k] and not math.isnan(RT[k]):
                             if (dist(X[j], Y[j], Z[j], X[k], Y[k], Z[k])) < dsmin:
                                 dsmin = (dist(X[j], Y[j], Z[j], X[k], Y[k], Z[k]))
 
