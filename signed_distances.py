@@ -99,9 +99,6 @@ class signed_distances:
         Y = sgems.get_property(grid, '_Y_')
         Z = sgems.get_property(grid, '_Z_')
         RT = sgems.get_property(grid, prop)
-        '''X = [i/1000 for i in X]
-        Y = [i/1000 for i in Y]
-        Z = [i/1000 for i in Z]'''
 
         elipsoide = self.params['ellipsoidinput']['value']
         elipsoide_split = elipsoide.split()
@@ -119,7 +116,7 @@ class signed_distances:
         #Creates a list of all rock types
         rt_list = []
         for i in RT:
-            if i not in rt_list:
+            if i not in rt_list and not math.isnan(i):
                 rt_list.append(i)
 
         #Sort the rock type list in crescent order
