@@ -168,8 +168,8 @@ class interpolator:
                     Prob_list[j][i] = math.exp(-SG_OK_list[j][i]/gamma)/soma
 
             #Creating probabilities propreties
-            for i in range(len(Prob_list)):
-                prop_final_data_name = 'Probability_RT'+str(RT[i][-1])
+            for k in range(len(Prob_list)):
+                prop_final_data_name = 'Probability_RT'+str(RT[k][-1])
 
                 if (prop_final_data_name in lst_props_grid):
                     flag=0
@@ -181,7 +181,7 @@ class interpolator:
                             prop_final_data_name=test_name
                         i=i+1
 
-                sgems.set_property(grid_krig, prop_final_data_name, Prob_list[i])
+                sgems.set_property(grid_krig, prop_final_data_name, Prob_list[k])
 
             #Operating servo-system
             if self.params['servo_check']['value'] == '1':
@@ -226,7 +226,8 @@ class interpolator:
                         flag=1
                         prop_final_data_name=test_name
                     i=i+1
-                sgems.set_property(grid_krig, prop_final_data_name, GeoModel_corrected)
+
+            sgems.set_property(grid_krig, prop_final_data_name, GeoModel_corrected)
 
         return True
 

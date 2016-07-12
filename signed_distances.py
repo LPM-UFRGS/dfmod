@@ -160,8 +160,8 @@ class signed_distances:
         #Creates the signed distances properties
         lst_props_grid=sgems.get_property_list(grid)
 
-        for i in range(len(dist_matrix)):
-            prop_final_data_name = 'Signed_Distances_RT_' + str(rt_list[i])
+        for k in range(len(dist_matrix)):
+            prop_final_data_name = 'Signed_Distances_RT_' + str(rt_list[k])
 
             if (prop_final_data_name in lst_props_grid):
                 flag=0
@@ -173,7 +173,7 @@ class signed_distances:
                         prop_final_data_name=test_name
                     i=i+1
 
-            list = dist_matrix[i].tolist()
+            list = dist_matrix[k].tolist()
             sgems.set_property(grid, prop_final_data_name, list)
 
         return True
