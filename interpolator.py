@@ -120,7 +120,7 @@ class interpolator:
                 var_str = var_str + '<{} type="{}">  <Two_point_model  contribution="{}"  type="{}"   >      <ranges range1="{}"  range2="{}"  range3="{}"   />      <angles azimuth="{}"  dip="{}"  rake="{}"   />    </Two_point_model>    </{}> '.format(Structure, 'Covariance', cont, cov_type, range1, range2, range3, azimuth, dip, rake, Structure)
 
             # Calling ordinary kriging for each variable, using the variograms parameters above
-            sgems.execute('RunGeostatAlgorithm  kriging::/GeostatParamUtils/XML::<parameters>  <algorithm name="kriging" />     <Variogram  structures_count="{}" >    {}  </Variogram>    <ouput_kriging_variance  value="0"  />     <output_n_samples_  value="0"  />     <output_average_distance  value="0"  />     <output_sum_weights  value="0"  />     <output_sum_positive_weights  value="0"  />     <output_lagrangian  value="0"  />     <Nb_processors  value="-2"  />    <Grid_Name value="{}" region=""  />     <Property_Name  value="{}" />     <Hard_Data  grid="{}"   property="{}"   region=""  />     <Kriging_Type  type="Ordinary Kriging (OK)" >    <parameters />  </Kriging_Type>    <do_block_kriging  value="1"  />     <npoints_x  value="5" />     <npoints_y  value="5" />     <npoints_z  value="5" />     <Min_Conditioning_Data  value="{}" />     <Max_Conditioning_Data  value="{}" />     <Search_Ellipsoid  value="{}" />    <AdvancedSearch  use_advanced_search="0"></AdvancedSearch>  </parameters>'.format(n_struct, var_str, grid_krig, prop_name, grid_var, prop_HD, min_cond, max_cond, elipsoide))
+            sgems.execute('RunGeostatAlgorithm  kriging::/GeostatParamUtils/XML::<parameters>  <algorithm name="kriging" />     <Variogram  structures_count="{}" >    {}  </Variogram>    <ouput_kriging_variance  value="1"  />     <output_n_samples_  value="0"  />     <output_average_distance  value="0"  />     <output_sum_weights  value="0"  />     <output_sum_positive_weights  value="0"  />     <output_lagrangian  value="0"  />     <Nb_processors  value="-2"  />    <Grid_Name value="{}" region=""  />     <Property_Name  value="{}" />     <Hard_Data  grid="{}"   property="{}"   region=""  />     <Kriging_Type  type="Ordinary Kriging (OK)" >    <parameters />  </Kriging_Type>    <do_block_kriging  value="1"  />     <npoints_x  value="5" />     <npoints_y  value="5" />     <npoints_z  value="5" />     <Min_Conditioning_Data  value="{}" />     <Max_Conditioning_Data  value="{}" />     <Search_Ellipsoid  value="{}" />    <AdvancedSearch  use_advanced_search="0"></AdvancedSearch>  </parameters>'.format(n_struct, var_str, grid_krig, prop_name, grid_var, prop_HD, min_cond, max_cond, elipsoide))
 
             SG_OK_list.append(sgems.get_property(grid_krig, prop_name))
 
@@ -138,7 +138,21 @@ class interpolator:
                     t = j
             GeoModel.append(int(RT[t][-1]))
 
-        sgems.set_property(grid_krig, 'Geologic_Model', GeoModel)
+        #Creating GeoModel property
+        lst_props_grid=sgems.get_property_list(grid_krig)
+        prop_final_data_name = 'Geologic_Model'
+
+        if (prop_final_data_name in lst_props_grid):
+            flag=0
+            i=1
+            while (flag==0):
+                test_name=prop_final_data_name+'-'+str(i)
+                if (test_name not in lst_props_grid):
+                    flag=1
+                    prop_final_data_name=test_name
+                i=i+1
+
+        sgems.set_property(grid_krig, prop_final_data_name, GeoModel)
 
         #Operating softmax transformation
         if self.params['softmax_check']['value']=='1':
@@ -153,8 +167,21 @@ class interpolator:
                 for j in range(len(SG_OK_list)):
                     Prob_list[j][i] = math.exp(-SG_OK_list[j][i]/gamma)/soma
 
+            #Creating probabilities propreties
             for i in range(len(Prob_list)):
-                sgems.set_property(grid_krig,'Probability_RT'+str(RT[i][-1]),Prob_list[i])
+                prop_final_data_name = 'Probability_RT'+str(RT[i][-1])
+
+                if (prop_final_data_name in lst_props_grid):
+                    flag=0
+                    i=1
+                    while (flag==0):
+                        test_name=prop_final_data_name+'-'+str(i)
+                        if (test_name not in lst_props_grid):
+                            flag=1
+                            prop_final_data_name=test_name
+                        i=i+1
+
+                sgems.set_property(grid_krig, prop_final_data_name, Prob_list[i])
 
             #Operating servo-system
             if self.params['servo_check']['value'] == '1':
@@ -187,7 +214,19 @@ class interpolator:
                     GeoModel_corrected[j] = int(RT[p][-1])
                     visited_rts[-1] = int(RT[p][-1])
 
-                sgems.set_property(grid_krig, 'Geologic_Model_Corrected', GeoModel_corrected)
+            #Creating Geologic_Model_Corrected property
+            prop_final_data_name = 'Geologic_Model_Corrected'
+
+            if (prop_final_data_name in lst_props_grid):
+                flag=0
+                i=1
+                while (flag==0):
+                    test_name=prop_final_data_name+'-'+str(i)
+                    if (test_name not in lst_props_grid):
+                        flag=1
+                        prop_final_data_name=test_name
+                    i=i+1
+                sgems.set_property(grid_krig, prop_final_data_name, GeoModel_corrected)
 
         return True
 
@@ -199,6 +238,6 @@ class interpolator:
 
         return "interpolator"
 
-###############################################################
+################################################################################
 def get_plugins():
     return ["interpolator"]

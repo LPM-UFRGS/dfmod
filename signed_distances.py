@@ -158,9 +158,23 @@ class signed_distances:
                         dist_matrix[i][j] = dsmin
 
         #Creates the signed distances properties
+        lst_props_grid=sgems.get_property_list(grid)
+
         for i in range(len(dist_matrix)):
+            prop_final_data_name = 'Signed_Distances_RT_' + str(rt_list[i])
+
+            if (prop_final_data_name in lst_props_grid):
+                flag=0
+                i=1
+                while (flag==0):
+                    test_name=prop_final_data_name+'-'+str(i)
+                    if (test_name not in lst_props_grid):
+                        flag=1
+                        prop_final_data_name=test_name
+                    i=i+1
+
             list = dist_matrix[i].tolist()
-            sgems.set_property(grid, 'Signed_Distances_RT_' + str(rt_list[i]), list)
+            sgems.set_property(grid, prop_final_data_name, list)
 
         return True
 
@@ -170,6 +184,6 @@ class signed_distances:
     def name(self):
         return "signed_distances"
 
-###############################################################
+################################################################################
 def get_plugins():
     return ["signed_distances"]
