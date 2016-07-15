@@ -60,6 +60,16 @@ class interpolator:
         read_params(self.params)
         print self.params'''
 
+        #Get the grid and rock type propery
+        grid = self.params['propertyselectornoregion']['grid']
+        prop = self.params['propertyselectornoregion']['property']
+
+        #Get the X, Y and Z coordinates and RT property
+        X = sgems.get_property(grid, '_X_')
+        Y = sgems.get_property(grid, '_Y_')
+        Z = sgems.get_property(grid, '_Z_')
+        RT_data = sgems.get_property(grid, prop)
+
         # Getting properties
         grid_krig = self.params['gridselectorbasic_2']['value']
         grid_var = self.params['gridselectorbasic']['value']
@@ -158,6 +168,12 @@ class interpolator:
                     prop_final_data_name=test_name
                 i=i+1
 
+        #Assign conditioning data to grid node
+        for i in range(len(RT_data)):
+            if not math.isnan(RT_data[i]):
+                closest_node = sgems.get_closest_nodeid(grid_krig, X[i],Y[i],Z[i])
+                GeoModel[closest_node] = RT_data[i]
+
         sgems.set_property(grid_krig, prop_final_data_name, GeoModel)
 
         #Operating softmax transformation
@@ -232,6 +248,12 @@ class interpolator:
                         flag=1
                         prop_final_data_name=test_name
                     i=i+1
+
+            #Assign conditioning data to grid node
+            for i in range(len(RT_data)):
+                if not math.isnan(RT_data[i]):
+                    closest_node = sgems.get_closest_nodeid(grid_krig, X[i],Y[i],Z[i])
+                    GeoModel_corrected[closest_node] = RT_data[i]
 
             sgems.set_property(grid_krig, prop_final_data_name, GeoModel_corrected)
 

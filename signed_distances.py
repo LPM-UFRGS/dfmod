@@ -94,7 +94,7 @@ class signed_distances:
             print 'Select the rocktype property'
             return False
 
-        #Get the X, Y and Z coordinates
+        #Get the X, Y and Z coordinates and RT property
         X = sgems.get_property(grid, '_X_')
         Y = sgems.get_property(grid, '_Y_')
         Z = sgems.get_property(grid, '_Z_')
