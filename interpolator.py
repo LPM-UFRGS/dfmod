@@ -18,10 +18,13 @@ import numpy as np
 import random
 
 #Creates a randon path given the size of the grid
-def random_path(n):
-    path = range(n)
-    random.shuffle(path)
-    return path
+def random_path(prop):
+    nodes_not_nan = []
+    for i in range(len(prop)):
+        if not math.isnan(prop[i]):
+            nodes_not_nan.append(i)
+    random.shuffle(nodes_not_nan)
+    return nodes_not_nan
 
 #Calculates the proportions of variables on a list
 def proportion(var, RT):
@@ -127,7 +130,7 @@ class interpolator:
         RT = (self.params['orderedpropertyselector']['value']).split(';')
 
         #Determinig geomodel based on minimum estimed signed distance function
-        GeoModel = []
+        GeoModel = SG_OK_list[0][:]
 
         t = 0
         for i in range(len(SG_OK_list[0])):
@@ -136,7 +139,10 @@ class interpolator:
                 if SG_OK_list[j][i] < sgmin:
                     sgmin = SG_OK_list[j][i]
                     t = j
-            GeoModel.append(int(RT[t][-1]))
+            if math.isnan(SG_OK_list[j][i]):
+                GeoModel[i] = float('nan')
+            else:
+                GeoModel[i] = (int(RT[t][-1]))
 
         #Creating GeoModel property
         lst_props_grid=sgems.get_property_list(grid_krig)
@@ -196,7 +202,7 @@ class interpolator:
                 target_prop = proportion(var_rt,RT)
                 mi = lambda1/(1-lambda1)
 
-                ran_path = random_path(len(Prob_list[0]))
+                ran_path = random_path(Prob_list[0])
 
                 p = 0
                 GeoModel_corrected = GeoModel[:]
