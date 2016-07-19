@@ -38,6 +38,20 @@ def proportion(var, RT):
         target_prop[i] = float(var.count(rock_types[i]))/len(var)
     return target_prop
 
+#Crestes a list with indices of the neighbors blocks
+def neighb(grid, indice):
+        ijk = sgems.get_ijk(grid, indice)
+        neighborhood = []
+        for i in range(ijk[0]-1,ijk[0]+2):
+            for j in range(ijk[1]-1,ijk[1]+2):
+                for k in range(ijk[2]-1,ijk[2]+2):
+                    print i,j,k
+                    n_blk = sgems.get_nodeid_from_ijk(grid, i, j, k)
+                    print n_blk
+                    neighborhood.append(n_blk)
+
+        return neighborhood
+
 # Shows every parameter of the plugin in the command pannel
 def read_params(a, j=''):
     for i in a:
@@ -98,6 +112,7 @@ class interpolator:
             prop_HD = props[i]
 
             prop_name = "Interpolated_" + str(prop_HD)
+            prop_name_var = "Interpolated_" + str(prop_HD) + ' krig_var'
 
             var_str = ''
 
@@ -136,6 +151,10 @@ class interpolator:
             sgems.execute('RunGeostatAlgorithm  kriging::/GeostatParamUtils/XML::<parameters>  <algorithm name="kriging" />     <Variogram  structures_count="{}" >    {}  </Variogram>    <ouput_kriging_variance  value="1"  />     <output_n_samples_  value="0"  />     <output_average_distance  value="0"  />     <output_sum_weights  value="0"  />     <output_sum_positive_weights  value="0"  />     <output_lagrangian  value="0"  />     <Nb_processors  value="-2"  />    <Grid_Name value="{}" region=""  />     <Property_Name  value="{}" />     <Hard_Data  grid="{}"   property="{}"   region=""  />     <Kriging_Type  type="Ordinary Kriging (OK)" >    <parameters />  </Kriging_Type>    <do_block_kriging  value="1"  />     <npoints_x  value="5" />     <npoints_y  value="5" />     <npoints_z  value="5" />     <Min_Conditioning_Data  value="{}" />     <Max_Conditioning_Data  value="{}" />     <Search_Ellipsoid  value="{}" />    <AdvancedSearch  use_advanced_search="0"></AdvancedSearch>  </parameters>'.format(n_struct, var_str, grid_krig, prop_name, grid_var, prop_HD, min_cond, max_cond, elipsoide))
 
             SG_OK_list.append(sgems.get_property(grid_krig, prop_name))
+
+            #Deleting kriged distances
+            sgems.execute('DeleteObjectProperties  {}::{}'.format(grid_krig, prop_name))
+            sgems.execute('DeleteObjectProperties  {}::{}'.format(grid_krig, prop_name_var))
 
         RT = (self.params['orderedpropertyselector']['value']).split(';')
 
@@ -256,6 +275,9 @@ class interpolator:
                     GeoModel_corrected[closest_node] = RT_data[i]
 
             sgems.set_property(grid_krig, prop_final_data_name, GeoModel_corrected)
+
+            for i in range(len(GeoModel_corrected)):
+                print neighb(grid_krig, i)
 
         return True
 
