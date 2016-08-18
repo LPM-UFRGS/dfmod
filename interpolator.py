@@ -16,6 +16,7 @@ import sgems
 import math
 import numpy as np
 import random
+import copy
 
 #Creates a randon path given the size of the grid
 def random_path(prop):
@@ -38,19 +39,45 @@ def proportion(var, RT):
         target_prop[i] = float(var.count(rock_types[i]))/len(var)
     return target_prop
 
-#Crestes a list with indices of the neighbors blocks
+#Transform i,j,k in n
+def ijk_in_n(grid, i, j, k):
+    dims = sgems.get_dims(grid)
+    n = k*dims[0]*dims[1]+j*dims[0]+i
+    return n
+
+#Crestes a list with indices of the neighbors valid blocks
 def neighb(grid, indice):
         ijk = sgems.get_ijk(grid, indice)
         neighborhood = []
         for i in range(ijk[0]-1,ijk[0]+2):
             for j in range(ijk[1]-1,ijk[1]+2):
                 for k in range(ijk[2]-1,ijk[2]+2):
-                    print i,j,k
-                    n_blk = sgems.get_nodeid_from_ijk(grid, i, j, k)
-                    print n_blk
-                    neighborhood.append(n_blk)
+                    ijk_blk = [i,j,k]
+                    neighborhood.append(ijk_blk)
+        dims = sgems.get_dims(grid)
+        neighborhood_cp = copy.copy(neighborhood)
+        for i in neighborhood_cp:
+            if dims[2] == 1:
+                if i[0] < 0 or i[1] < 0:
+                    neighborhood.remove(i)
+                elif i[0] > (dims[0] - 1) or i[1] > (dims[1] - 1):
+                    neighborhood.remove(i)
+                elif i[2] != 0:
+                    neighborhood.remove(i)
+                elif i == sgems.get_ijk(grid, indice):
+                    neighborhood.remove(i)
+            else:
+                if i[0] < 0 or i[1] < 0 or i[2] < 0:
+                    neighborhood.remove(i)
+                elif i[0] > (dims[0] - 1) or i[1] > (dims[1] - 1) or i[2] > (dims[2] - 1):
+                    neighborhood.remove(i)
+                elif i == sgems.get_ijk(grid, indice):
+                    neighborhood.remove(i)
+        neighborhood_n = []
+        for i in neighborhood:
+            neighborhood_n.append(ijk_in_n(grid,i[0],i[1],i[2]))
+        return neighborhood_n
 
-        return neighborhood
 
 # Shows every parameter of the plugin in the command pannel
 def read_params(a, j=''):
@@ -135,7 +162,7 @@ class interpolator:
                 cov_type = self.params['indicator_regionalization_input'][indicator_group]['Covariance_input'][Structure]['Two_point_model']['type']
 
                 cont = self.params['indicator_regionalization_input'][indicator_group]['Covariance_input'][Structure]['Two_point_model']['contribution']
-            
+
                 if cov_type == 'Nugget Covariance':
                     #Writing variogram parameters on a variable in nugget effect case
                     var_str = var_str + '<{} type="{}">  <Two_point_model  contribution="{}"  type="{}"   >    </Two_point_model>    </Structure_1> '.format(Structure, 'Covariance', cont, cov_type, Structure)
@@ -260,6 +287,19 @@ class interpolator:
                     GeoModel_corrected[j] = int(RT[p][-1])
                     visited_rts[-1] = int(RT[p][-1])
 
+                #Correcting servo servo-system by the biggest proportion on a neighborhood
+                GeoModel_corrected_servo_prop = GeoModel_corrected[:]
+                for i in range(len(GeoModel_corrected_servo_prop)):
+                    vizinhanca = neighb(grid_krig,i)
+                    blk_geo_model_corrected_servo = []
+                    for j in vizinhanca:
+                        print j, len(GeoModel_corrected), GeoModel_corrected[j]
+                        blk_geo_model_corrected_servo.append(GeoModel_corrected[j])
+                    proportions_servo = proportion(blk_geo_model_corrected_servo, RT)
+                    indice_max_prop = proportions_servo.index(max(proportions_servo))
+                    if not math.isnan(GeoModel_corrected_servo_prop[i]):
+                        GeoModel_corrected[i] = int(RT[indice_max_prop][-1])
+
             #Creating Geologic_Model_Corrected property
             prop_final_data_name = 'Geologic_Model_Corrected'
 
@@ -280,9 +320,6 @@ class interpolator:
                     GeoModel_corrected[closest_node] = RT_data[i]
 
             sgems.set_property(grid_krig, prop_final_data_name, GeoModel_corrected)
-
-            for i in range(len(GeoModel_corrected)):
-                print neighb(grid_krig, i)
 
         return True
 
