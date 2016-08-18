@@ -278,30 +278,34 @@ class interpolator:
                 for j in ran_path:
                     visited_rts.append(GeoModel[j])
                     instant_proportions = proportion(visited_rts,RT)
+
+                    sgmax = 10e-21
                     for i in range(len(Prob_list)):
-                        Prob_list[i][j] = Prob_list[i][j] + mi * (target_prop[i] - instant_proportions[i])
-                        sgmax = 10e-21
+                        Prob_list[i][j] = Prob_list[i][j] + (mi * (target_prop[i] - instant_proportions[i]))
                         if Prob_list[i][j] > sgmax:
                             sgmax = Prob_list[i][j]
                             p = i
+
                     GeoModel_corrected[j] = int(RT[p][-1])
                     visited_rts[-1] = int(RT[p][-1])
 
                 #Correcting servo servo-system by the biggest proportion on a neighborhood
                 GeoModel_corrected_servo_prop = GeoModel_corrected[:]
-                for i in range(len(GeoModel_corrected_servo_prop)):
+                ran_path_servo_correction = random_path(GeoModel_corrected_servo_prop)
+                for i in ran_path_servo_correction:
                     vizinhanca = neighb(grid_krig,i)
+
                     blk_geo_model_corrected_servo = []
                     for j in vizinhanca:
-                        print j, len(GeoModel_corrected), GeoModel_corrected[j]
-                        blk_geo_model_corrected_servo.append(GeoModel_corrected[j])
+                        blk_geo_model_corrected_servo.append(GeoModel_corrected_servo_prop[j])
+
                     proportions_servo = proportion(blk_geo_model_corrected_servo, RT)
                     indice_max_prop = proportions_servo.index(max(proportions_servo))
-                    if not math.isnan(GeoModel_corrected_servo_prop[i]):
-                        GeoModel_corrected[i] = int(RT[indice_max_prop][-1])
 
-            #Creating Geologic_Model_Corrected property
-            prop_final_data_name = 'Geologic_Model_Corrected'
+                    GeoModel_corrected_servo_prop[i] = int(RT[indice_max_prop][-1])
+
+            #Creating Geologic_Model_Servo_System property
+            prop_final_data_name = 'Geologic_Model_Servo_System'
 
             if (prop_final_data_name in lst_props_grid):
                 flag=0
@@ -313,13 +317,28 @@ class interpolator:
                         prop_final_data_name=test_name
                     i=i+1
 
+            #Creating Geologic_Model_Corrected property
+            prop_final_data_name1 = 'Geologic_Model_Corrected'
+
+            if (prop_final_data_name1 in lst_props_grid):
+                flag=0
+                i=1
+                while (flag==0):
+                    test_name1=prop_final_data_name1+'-'+str(i)
+                    if (test_name1 not in lst_props_grid):
+                        flag=1
+                        prop_final_data_name1=test_name1
+                    i=i+1
+
             #Assign conditioning data to grid node
             for i in range(len(RT_data)):
                 if not math.isnan(RT_data[i]):
                     closest_node = sgems.get_closest_nodeid(grid_krig, X[i],Y[i],Z[i])
                     GeoModel_corrected[closest_node] = RT_data[i]
+                    GeoModel_corrected_servo_prop[closest_node] = RT_data[i]
 
             sgems.set_property(grid_krig, prop_final_data_name, GeoModel_corrected)
+            sgems.set_property(grid_krig, prop_final_data_name1, GeoModel_corrected_servo_prop)
 
         return True
 
