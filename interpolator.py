@@ -141,16 +141,11 @@ class interpolator:
 
             # Getting variables
             prop_HD = props[i]
-
             prop_name = "Interpolated_" + str(prop_HD)
             prop_name_var = "Interpolated_" + str(prop_HD) + ' krig_var'
-
             var_str = ''
-
             indicator_group = "Indicator_group_" + str(i + 1)
-
             elipsoide = self.params['ellipsoidinput']['value']
-
             n_struct = int(self.params['indicator_regionalization_input'][indicator_group]['Covariance_input']['structures_count'])
 
             # Error message
