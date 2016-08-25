@@ -35,8 +35,12 @@ def proportion(var, RT):
         target_prop.append(0)
         rock_types.append(int(RT[k][-1]))
     rock_types.sort()
+    var_not_nan = []
+    for i in var:
+        if not math.isnan(i):
+            var_not_nan.append(i)
     for i in range(len(rock_types)):
-        target_prop[i] = float(var.count(rock_types[i]))/len(var)
+        target_prop[i] = float(var.count(rock_types[i]))/len(var_not_nan)
     return target_prop
 
 #Transform i,j,k in n
@@ -260,17 +264,44 @@ class interpolator:
             if self.params['servo_check']['value'] == '1':
                 var_rt_grid = self.params['targe_prop']['grid']
                 var_rt_st = self.params['targe_prop']['property']
+                var_rt_region = self.params['targe_prop']['region']
                 if len(var_rt_grid) == 0 or len(var_rt_st) == 0:
                     print 'Select the target proportion property'
                     return False
 
-                var_rt = sgems.get_property(self.params['targe_prop']['grid'],self.params['targe_prop']['property'])
+                #Getting variables
+                var_rt = sgems.get_property(var_rt_grid, var_rt_st)
+
+                #Getting parameters
                 lambda1 = float(self.params['Lambda']['value'])
-                target_prop = proportion(var_rt,RT)
                 mi = lambda1/(1-lambda1)
 
+                #Checking if a region exist
+                if len(var_rt_region) == 0:
+                    #Variable without a region
+                    var_region = var_rt
+
+                else:
+                    region_rt = sgems.get_region(var_rt_grid, var_rt_region)
+                    #Geting the variable inside the region
+                    var_region = []
+                    for i in range(len(var_rt)):
+                        if region_rt[i] == 1:
+                            var_region.append(var_rt[i])
+
+                #Getting the target proportion
+                target_prop = proportion(var_region, RT)
+
+                #Getting the random path
                 ran_path = random_path(Prob_list[0])
 
+                #Removing the blocks outside the region from randon path
+                if len(var_rt_region) != 0:
+                    for i in range(len(region_rt)):
+                        if region_rt[i] == 0:
+                            ran_path.remove(i)
+
+                #servo system
                 p = 0
                 GeoModel_corrected = GeoModel[:]
 
@@ -337,6 +368,7 @@ class interpolator:
                     GeoModel_corrected[closest_node] = RT_data[i]
                     GeoModel_corrected_servo_prop[closest_node] = RT_data[i]
 
+            #Setting properties
             sgems.set_property(grid_krig, prop_final_data_name, GeoModel_corrected)
             sgems.set_property(grid_krig, prop_final_data_name1, GeoModel_corrected_servo_prop)
 
