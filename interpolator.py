@@ -330,42 +330,42 @@ class interpolator:
 
                     GeoModel_corrected_servo_prop[i] = int(RT[indice_max_prop][-1])
 
-            #Creating Geologic_Model_Servo_System property
-            prop_final_data_name = 'Geologic_Model_Servo_System'
+                #Creating Geologic_Model_Servo_System property
+                prop_final_data_name = 'Geologic_Model_Servo_System'
 
-            if (prop_final_data_name in lst_props_grid):
-                flag=0
-                i=1
-                while (flag==0):
-                    test_name=prop_final_data_name+'-'+str(i)
-                    if (test_name not in lst_props_grid):
-                        flag=1
-                        prop_final_data_name=test_name
-                    i=i+1
+                if (prop_final_data_name in lst_props_grid):
+                    flag=0
+                    i=1
+                    while (flag==0):
+                        test_name=prop_final_data_name+'-'+str(i)
+                        if (test_name not in lst_props_grid):
+                            flag=1
+                            prop_final_data_name=test_name
+                        i=i+1
 
-            #Creating Geologic_Model_Corrected property
-            prop_final_data_name1 = 'Geologic_Model_Corrected'
+                #Creating Geologic_Model_Corrected property
+                prop_final_data_name1 = 'Geologic_Model_Corrected'
 
-            if (prop_final_data_name1 in lst_props_grid):
-                flag=0
-                i=1
-                while (flag==0):
-                    test_name1=prop_final_data_name1+'-'+str(i)
-                    if (test_name1 not in lst_props_grid):
-                        flag=1
-                        prop_final_data_name1=test_name1
-                    i=i+1
+                if (prop_final_data_name1 in lst_props_grid):
+                    flag=0
+                    i=1
+                    while (flag==0):
+                        test_name1=prop_final_data_name1+'-'+str(i)
+                        if (test_name1 not in lst_props_grid):
+                            flag=1
+                            prop_final_data_name1=test_name1
+                        i=i+1
 
-            #Assign conditioning data to grid node
-            for i in range(len(RT_data)):
-                if not math.isnan(RT_data[i]):
-                    closest_node = sgems.get_closest_nodeid(grid_krig, X[i],Y[i],Z[i])
-                    GeoModel_corrected[closest_node] = RT_data[i]
-                    GeoModel_corrected_servo_prop[closest_node] = RT_data[i]
+                #Assign conditioning data to grid node
+                for i in range(len(RT_data)):
+                    if not math.isnan(RT_data[i]):
+                        closest_node = sgems.get_closest_nodeid(grid_krig, X[i],Y[i],Z[i])
+                        GeoModel_corrected[closest_node] = RT_data[i]
+                        GeoModel_corrected_servo_prop[closest_node] = RT_data[i]
 
-            #Setting properties
-            sgems.set_property(grid_krig, prop_final_data_name, GeoModel_corrected)
-            sgems.set_property(grid_krig, prop_final_data_name1, GeoModel_corrected_servo_prop)
+                #Setting properties
+                sgems.set_property(grid_krig, prop_final_data_name, GeoModel_corrected)
+                sgems.set_property(grid_krig, prop_final_data_name1, GeoModel_corrected_servo_prop)
 
         return True
 
