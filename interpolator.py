@@ -33,7 +33,7 @@ def proportion(var, RT):
     target_prop = []
     for k in range(len(RT)):
         target_prop.append(0)
-        rock_types.append(int(RT[k][-1]))
+        rock_types.append(int(RT[k].split('RT_')[-1]))
     rock_types.sort()
     var_not_nan = []
     for i in var:
@@ -202,7 +202,7 @@ class interpolator:
             if math.isnan(SG_OK_list[j][i]):
                 GeoModel[i] = float('nan')
             else:
-                GeoModel[i] = (int(RT[t][-1]))
+                GeoModel[i] = (int(RT[t].split('RT_')[-1]))
 
         #Creating GeoModel property
         lst_props_grid=sgems.get_property_list(grid_krig)
@@ -241,7 +241,7 @@ class interpolator:
 
             #Creating probabilities propreties
             for k in range(len(Prob_list)):
-                prop_final_data_name = 'Probability_RT'+str(RT[k][-1])
+                prop_final_data_name = 'Probability_RT'+str(RT[k].split('RT_')[-1])
 
                 if (prop_final_data_name in lst_props_grid):
                     flag=0
@@ -313,7 +313,7 @@ class interpolator:
                             p = i
 
                     GeoModel_corrected[j] = int(RT[p][-1])
-                    visited_rts[-1] = int(RT[p][-1])
+                    visited_rts[-1] = int(RT[p].split('RT_')[-1])
 
                 #Correcting servo servo-system by the biggest proportion on a neighborhood
                 GeoModel_corrected_servo_prop = GeoModel_corrected[:]
@@ -328,7 +328,7 @@ class interpolator:
                     proportions_servo = proportion(blk_geo_model_corrected_servo, RT)
                     indice_max_prop = proportions_servo.index(max(proportions_servo))
 
-                    GeoModel_corrected_servo_prop[i] = int(RT[indice_max_prop][-1])
+                    GeoModel_corrected_servo_prop[i] = int(RT[indice_max_prop].split('RT_')[-1])
 
                 #Creating Geologic_Model_Servo_System property
                 prop_final_data_name = 'Geologic_Model_Servo_System'
