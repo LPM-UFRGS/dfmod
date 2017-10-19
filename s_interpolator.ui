@@ -20,7 +20,7 @@
    <string>DFMod</string>
   </property>
   <property name="AlgorithmDescription" stdset="0">
-   <string>interpolator</string>
+   <string>s_interpolator</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>

@@ -95,7 +95,7 @@ def read_params(a, j=''):
         else:
             read_params(a[i], j + "['" + str(i) + "']")
 
-class interpolator:
+class s_interpolator:
     def __init__(self):
         pass
 
@@ -481,8 +481,8 @@ class interpolator:
 
     def name(self):
 
-        return "interpolator"
+        return "s_interpolator"
 
 ################################################################################
 def get_plugins():
-    return ["interpolator"]
+    return ["s_interpolator"]
