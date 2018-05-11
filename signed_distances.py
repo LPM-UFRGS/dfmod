@@ -144,7 +144,7 @@ class signed_distances:
                             if (dist(X[j], Y[j], Z[j], X[k], Y[k], Z[k])) < dsmin:
                                 dsmin = (dist(X[j], Y[j], Z[j], X[k], Y[k], Z[k]))
 
-                        dist_matrix[i][j] = -dsmin
+                        dist_matrix[i][j] = -dsmin - c
 
                 else:
                     dsmin = 1.0e21
@@ -155,7 +155,7 @@ class signed_distances:
                             if (dist(X[j], Y[j], Z[j], X[k], Y[k], Z[k])) < dsmin:
                                 dsmin = (dist(X[j], Y[j], Z[j], X[k], Y[k], Z[k]))
 
-                        dist_matrix[i][j] = dsmin
+                        dist_matrix[i][j] = dsmin + c
 
         #Creates the signed distances properties
         lst_props_grid=sgems.get_property_list(grid)
