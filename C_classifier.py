@@ -3,11 +3,11 @@
 # Signed Distances Function Interpolator
 # **************************************
 #
-# This SGeMS plugin interpolates (OK) the signed distance function calculated
-# for each data and rock type, and creates a geologic model based on the minimum
-# estimated distance.
-#
-# AUTHORS: Flávio A. N. Amarante and Roberto Mentzingen Rolo
+# This SGeMS plugin interpolates, simulates and classify the signed  distance   
+# function calculated, and creates realizations of an geologic model.  
+#   
+#  
+# AUTHORS: Flávio A. N. Amarante and Roberto Mentzingen Rolo  
 #
 #-------------------------------------------------------------------------------
 
