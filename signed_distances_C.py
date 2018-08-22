@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 #
-# Signed Distance Function Calculator
-# ***********************************
+# Signed Distance Function Calculator C
+# **************************************
 #
 # This SGeMS plugin calculates the anisotropic signed distances for each data
 # point and each rock type
